@@ -91,6 +91,134 @@
             align-items: center;
         }
 
+        .reading-modes {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-btn.active {
+            border-color: #4facfe;
+            background: #4facfe;
+            color: white;
+        }
+
+        .mode-btn:hover:not(.active) {
+            border-color: #4facfe;
+            background: #f0f8ff;
+        }
+
+        /* Modos de lectura */
+        .reading-mode-light {
+            background: #ffffff;
+            color: #333;
+        }
+
+        .reading-mode-light .bionic-bold {
+            color: #000;
+            font-weight: 700;
+        }
+
+        .reading-mode-light .bionic-normal {
+            color: #666;
+            font-weight: 400;
+        }
+
+        .reading-mode-dark {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+
+        .reading-mode-dark .bionic-bold {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .reading-mode-dark .bionic-normal {
+            color: #a0aec0;
+            font-weight: 400;
+        }
+
+        .reading-mode-sepia {
+            background: #f4f1ea;
+            color: #5d4e37;
+            border-color: #d4c4a8;
+        }
+
+        .reading-mode-sepia .bionic-bold {
+            color: #3d2914;
+            font-weight: 700;
+        }
+
+        .reading-mode-sepia .bionic-normal {
+            color: #8b7355;
+            font-weight: 400;
+        }
+
+        .reading-mode-night {
+            background: #1a1a1a;
+            color: #cccccc;
+            border-color: #333333;
+        }
+
+        .reading-mode-night .bionic-bold {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .reading-mode-night .bionic-normal {
+            color: #888888;
+            font-weight: 400;
+        }
+
+        .reading-mode-blue {
+            background: #1e3a8a;
+            color: #dbeafe;
+            border-color: #3730a3;
+        }
+
+        .reading-mode-blue .bionic-bold {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .reading-mode-blue .bionic-normal {
+            color: #93c5fd;
+            font-weight: 400;
+        }
+
+        .reading-mode-green {
+            background: #064e3b;
+            color: #d1fae5;
+            border-color: #065f46;
+        }
+
+        .reading-mode-green .bionic-bold {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        .reading-mode-green .bionic-normal {
+            color: #86efac;
+            font-weight: 400;
+        }
+
         .control-group {
             display: flex;
             align-items: center;
@@ -270,6 +398,27 @@
                 <textarea class="input-area" id="inputText" placeholder="Pega aquí tu texto para convertir a formato bionic...
 
 Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las personas a leer más rápido resaltando las primeras letras de cada palabra."></textarea>
+                
+                <div class="reading-modes">
+                    <button class="mode-btn active" onclick="changeReadingMode('light')" data-mode="light">
+                        ☀️ Claro
+                    </button>
+                    <button class="mode-btn" onclick="changeReadingMode('dark')" data-mode="dark">
+                        🌙 Oscuro
+                    </button>
+                    <button class="mode-btn" onclick="changeReadingMode('sepia')" data-mode="sepia">
+                        📜 Sepia
+                    </button>
+                    <button class="mode-btn" onclick="changeReadingMode('night')" data-mode="night">
+                        🌃 Noche
+                    </button>
+                    <button class="mode-btn" onclick="changeReadingMode('blue')" data-mode="blue">
+                        💙 Azul
+                    </button>
+                    <button class="mode-btn" onclick="changeReadingMode('green')" data-mode="green">
+                        💚 Verde
+                    </button>
+                </div>
                 
                 <div class="controls">
                     <div class="control-group">
