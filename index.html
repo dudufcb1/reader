@@ -4,473 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Lectura Bionic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .bionic-word {
+            margin-right: 4px;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 30px;
-        }
-
-        .input-section, .output-section {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .input-area {
-            width: 100%;
-            min-height: 300px;
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            font-size: 16px;
-            line-height: 1.6;
-            resize: vertical;
-            transition: border-color 0.3s ease;
-            font-family: inherit;
-        }
-
-        .input-area:focus {
-            outline: none;
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .reading-modes {
-            display: flex;
-            gap: 10px;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-
-        .mode-btn {
-            padding: 8px 15px;
-            border: 2px solid #ddd;
-            border-radius: 20px;
-            background: white;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .mode-btn.active {
-            border-color: #4facfe;
-            background: #4facfe;
-            color: white;
-        }
-
-        .mode-btn:hover:not(.active) {
-            border-color: #4facfe;
-            background: #f0f8ff;
-        }
-
-        /* Modos de lectura */
-        .reading-mode-light {
-            background: #ffffff;
-            color: #333;
-        }
-
-        .reading-mode-light .bionic-bold {
-            color: #000;
-            font-weight: 700;
-        }
-
-        .reading-mode-light .bionic-normal {
-            color: #666;
-            font-weight: 400;
-        }
-
-        .reading-mode-dark {
-            background: #2d3748;
-            color: #e2e8f0;
-            border-color: #4a5568;
-        }
-
-        .reading-mode-dark .bionic-bold {
-            color: #ffffff;
-            font-weight: 700;
-        }
-
-        .reading-mode-dark .bionic-normal {
-            color: #a0aec0;
-            font-weight: 400;
-        }
-
-        .reading-mode-sepia {
-            background: #f4f1ea;
-            color: #5d4e37;
-            border-color: #d4c4a8;
-        }
-
-        .reading-mode-sepia .bionic-bold {
-            color: #3d2914;
-            font-weight: 700;
-        }
-
-        .reading-mode-sepia .bionic-normal {
-            color: #8b7355;
-            font-weight: 400;
-        }
-
-        .reading-mode-night {
-            background: #1a1a1a;
-            color: #cccccc;
-            border-color: #333333;
-        }
-
-        .reading-mode-night .bionic-bold {
-            color: #ffffff;
-            font-weight: 700;
-        }
-
-        .reading-mode-night .bionic-normal {
-            color: #888888;
-            font-weight: 400;
-        }
-
-        .reading-mode-blue {
-            background: #1e3a8a;
-            color: #dbeafe;
-            border-color: #3730a3;
-        }
-
-        .reading-mode-blue .bionic-bold {
-            color: #ffffff;
-            font-weight: 700;
-        }
-
-        .reading-mode-blue .bionic-normal {
-            color: #93c5fd;
-            font-weight: 400;
-        }
-
-        .reading-mode-green {
-            background: #064e3b;
-            color: #d1fae5;
-            border-color: #065f46;
-        }
-
-        .reading-mode-green .bionic-bold {
-            color: #ffffff;
-            font-weight: 700;
-        }
-
-        .reading-mode-green .bionic-normal {
-            color: #86efac;
-            font-weight: 400;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .control-group label {
-            font-weight: 500;
-            color: #555;
-            white-space: nowrap;
-        }
-
-        .slider {
-            width: 100px;
-            height: 5px;
-            border-radius: 5px;
-            background: #ddd;
-            outline: none;
-            -webkit-appearance: none;
-        }
-
+        
         .slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #4facfe;
+            background: #3b82f6;
             cursor: pointer;
         }
-
+        
         .slider::-moz-range-thumb {
             width: 20px;
             height: 20px;
             border-radius: 50%;
-            background: #4facfe;
+            background: #3b82f6;
             cursor: pointer;
             border: none;
         }
-
-        .btn {
+        
+        .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        
+        .gradient-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        .output-area {
-            background: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 20px;
-            min-height: 300px;
-            font-size: 18px;
-            line-height: 1.8;
-            overflow-y: auto;
-            transition: all 0.3s ease;
-        }
-
-        .bionic-word {
-            margin-right: 5px;
-        }
-
-        .bionic-bold {
-            font-weight: 700;
-            color: #333;
-        }
-
-        .bionic-normal {
-            font-weight: 400;
-            color: #666;
-        }
-
-        .stats {
+        
+        .gradient-stats {
             background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #333;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .examples {
-            background: #f0f8ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .examples h3 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .example-btn {
-            background: #e3f2fd;
-            border: 1px solid #90caf9;
-            color: #1565c0;
-            padding: 8px 15px;
-            border-radius: 20px;
-            margin: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .example-btn:hover {
-            background: #90caf9;
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .control-group {
-                justify-content: space-between;
-            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🧠 Generador de Lectura Bionic</h1>
-            <p>Mejora tu velocidad de lectura y concentración con técnicas de resaltado inteligente</p>
+<body class="gradient-bg min-h-screen p-5">
+    <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <!-- Header -->
+        <div class="gradient-header text-white p-8 text-center">
+            <h1 class="text-4xl font-bold mb-3">🧠 Generador de Lectura Bionic</h1>
+            <p class="text-lg opacity-90">Mejora tu velocidad de lectura y concentración con técnicas de resaltado inteligente</p>
         </div>
 
-        <div class="main-content">
-            <div class="input-section">
-                <h2 class="section-title">📝 Texto Original</h2>
-                <textarea class="input-area" id="inputText" placeholder="Pega aquí tu texto para convertir a formato bionic...
+        <!-- Main Content -->
+        <div class="grid lg:grid-cols-2 gap-8 p-8">
+            <!-- Input Section -->
+            <div class="space-y-6">
+                <h2 class="text-2xl font-semibold text-gray-800">📝 Texto Original</h2>
+                
+                <textarea 
+                    id="inputText" 
+                    class="w-full h-80 p-5 border-2 border-gray-200 rounded-2xl text-base leading-relaxed resize-y focus:outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100 transition-all"
+                    placeholder="Pega aquí tu texto para convertir a formato bionic...
 
 Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las personas a leer más rápido resaltando las primeras letras de cada palabra."></textarea>
                 
-                <div class="reading-modes">
-                    <button class="mode-btn active" onclick="changeReadingMode('light')" data-mode="light">
-                        ☀️ Claro
-                    </button>
-                    <button class="mode-btn" onclick="changeReadingMode('dark')" data-mode="dark">
-                        🌙 Oscuro
-                    </button>
-                    <button class="mode-btn" onclick="changeReadingMode('sepia')" data-mode="sepia">
-                        📜 Sepia
-                    </button>
-                    <button class="mode-btn" onclick="changeReadingMode('night')" data-mode="night">
-                        🌃 Noche
-                    </button>
-                    <button class="mode-btn" onclick="changeReadingMode('blue')" data-mode="blue">
-                        💙 Azul
-                    </button>
-                    <button class="mode-btn" onclick="changeReadingMode('green')" data-mode="green">
-                        💚 Verde
-                    </button>
+                <!-- Reading Modes -->
+                <div class="space-y-3">
+                    <h3 class="font-medium text-gray-700">🎨 Modos de Lectura:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="changeReadingMode('light')" data-mode="light" class="mode-btn px-4 py-2 border-2 border-gray-300 rounded-full text-sm font-medium transition-all hover:border-blue-400 hover:bg-blue-50 bg-blue-500 text-white border-blue-500">
+                            ☀️ Claro
+                        </button>
+                        <button onclick="changeReadingMode('dark')" data-mode="dark" class="mode-btn px-4 py-2 border-2 border-gray-300 rounded-full text-sm font-medium transition-all hover:border-blue-400 hover:bg-blue-50">
+                            🌙 Oscuro
+                        </button>
+                        <button onclick="changeReadingMode('sepia')" data-mode="sepia" class="mode-btn px-4 py-2 border-2 border-gray-300 rounded-full text-sm font-medium transition-all hover:border-blue-400 hover:bg-blue-50">
+                            📜 Sepia
+                        </button>
+                        <button onclick="changeReadingMode('night')" data-mode="night" class="mode-btn px-4 py-2 border-2 border-gray-300 rounded-full text-sm font-medium transition-all hover:border-blue-400 hover:bg-blue-50">
+                            🌃 Noche
+                        </button>
+                        <button onclick="changeReadingMode('blue')" data-mode="blue" class="mode-btn px-4 py-2 border-2 border-gray-300 rounded-full text-sm font-medium transition-all hover:border-blue-400 hover:bg-blue-50">
+                            💙 Azul
+                        </button>
+                        <button onclick="changeReadingMode('green')" data-mode="green" class="mode-btn px-4 py-2 border-2 border-gray-300 rounded-full text-sm font-medium transition-all hover:border-blue-400 hover:bg-blue-50">
+                            💚 Verde
+                        </button>
+                    </div>
                 </div>
                 
-                <div class="controls">
-                    <div class="control-group">
-                        <label for="boldRatio">Intensidad:</label>
-                        <input type="range" id="boldRatio" class="slider" min="0.3" max="0.8" step="0.1" value="0.5">
-                        <span id="boldRatioValue">50%</span>
+                <!-- Controls -->
+                <div class="space-y-4">
+                    <div class="flex flex-wrap gap-6 items-center">
+                        <div class="flex items-center gap-3">
+                            <label class="font-medium text-gray-600">Intensidad:</label>
+                            <input type="range" id="boldRatio" class="slider w-24 h-2 bg-gray-200 rounded-lg outline-none" min="0.3" max="0.8" step="0.1" value="0.5">
+                            <span id="boldRatioValue" class="text-sm font-medium text-gray-600">50%</span>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            <label class="font-medium text-gray-600">Tamaño:</label>
+                            <input type="range" id="fontSize" class="slider w-24 h-2 bg-gray-200 rounded-lg outline-none" min="14" max="24" step="2" value="18">
+                            <span id="fontSizeValue" class="text-sm font-medium text-gray-600">18px</span>
+                        </div>
                     </div>
                     
-                    <div class="control-group">
-                        <label for="fontSize">Tamaño:</label>
-                        <input type="range" id="fontSize" class="slider" min="14" max="24" step="2" value="18">
-                        <span id="fontSizeValue">18px</span>
+                    <div class="flex gap-3">
+                        <button onclick="convertToBionic()" class="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all">
+                            ✨ Convertir
+                        </button>
+                        <button onclick="clearAll()" class="px-6 py-3 bg-gray-500 text-white rounded-full font-semibold hover:bg-gray-600 transition-all">
+                            🗑️ Limpiar
+                        </button>
                     </div>
-                    
-                    <button class="btn" onclick="convertToBionic()">✨ Convertir</button>
-                    <button class="btn" onclick="clearAll()">🗑️ Limpiar</button>
                 </div>
 
-                <div class="examples">
-                    <h3>📖 Textos de Ejemplo:</h3>
-                    <button class="example-btn" onclick="loadExample(1)">Artículo de Ciencia</button>
-                    <button class="example-btn" onclick="loadExample(2)">Noticia</button>
-                    <button class="example-btn" onclick="loadExample(3)">Literatura</button>
-                    <button class="example-btn" onclick="loadExample(4)">Técnico</button>
+                <!-- Examples -->
+                <div class="bg-blue-50 rounded-2xl p-5">
+                    <h3 class="font-semibold text-gray-800 mb-3">📖 Textos de Ejemplo:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="loadExample(1)" class="px-3 py-2 bg-white border border-blue-200 text-blue-700 rounded-xl text-sm hover:bg-blue-100 transition-all">Artículo de Ciencia</button>
+                        <button onclick="loadExample(2)" class="px-3 py-2 bg-white border border-blue-200 text-blue-700 rounded-xl text-sm hover:bg-blue-100 transition-all">Noticia</button>
+                        <button onclick="loadExample(3)" class="px-3 py-2 bg-white border border-blue-200 text-blue-700 rounded-xl text-sm hover:bg-blue-100 transition-all">Literatura</button>
+                        <button onclick="loadExample(4)" class="px-3 py-2 bg-white border border-blue-200 text-blue-700 rounded-xl text-sm hover:bg-blue-100 transition-all">Técnico</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="output-section">
-                <h2 class="section-title">🎯 Resultado Bionic</h2>
-                <div class="output-area" id="outputText">
-                    <p style="color: #999; text-align: center; margin-top: 100px; font-style: italic;">
+            <!-- Output Section -->
+            <div class="space-y-6">
+                <h2 class="text-2xl font-semibold text-gray-800">🎯 Resultado Bionic</h2>
+                
+                <div id="outputText" class="min-h-80 p-5 border-2 border-gray-200 rounded-2xl text-lg leading-relaxed overflow-y-auto transition-all bg-white text-gray-800">
+                    <p class="text-gray-400 text-center mt-24 italic">
                         El texto convertido aparecerá aquí...
                     </p>
                 </div>
                 
-                <div class="stats" id="stats" style="display: none;">
-                    <div class="stat-item">
-                        <div class="stat-number" id="wordCount">0</div>
-                        <div class="stat-label">Palabras</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="charCount">0</div>
-                        <div class="stat-label">Caracteres</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="readTime">0</div>
-                        <div class="stat-label">Min. Lectura</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number" id="bionicTime">0</div>
-                        <div class="stat-label">Min. Bionic</div>
+                <!-- Stats -->
+                <div id="stats" class="gradient-stats rounded-2xl p-5 hidden">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <div id="wordCount" class="text-2xl font-bold text-gray-800">0</div>
+                            <div class="text-sm text-gray-600 uppercase tracking-wide">Palabras</div>
+                        </div>
+                        <div>
+                            <div id="charCount" class="text-2xl font-bold text-gray-800">0</div>
+                            <div class="text-sm text-gray-600 uppercase tracking-wide">Caracteres</div>
+                        </div>
+                        <div>
+                            <div id="readTime" class="text-2xl font-bold text-gray-800">0</div>
+                            <div class="text-sm text-gray-600 uppercase tracking-wide">Min. Lectura</div>
+                        </div>
+                        <div>
+                            <div id="bionicTime" class="text-2xl font-bold text-gray-800">0</div>
+                            <div class="text-sm text-gray-600 uppercase tracking-wide">Min. Bionic</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -481,21 +165,68 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
         // Variable global para el modo actual
         let currentReadingMode = 'light';
 
+        // Configuración de modos de lectura
+        const readingModes = {
+            light: {
+                bg: 'bg-white',
+                text: 'text-gray-800',
+                border: 'border-gray-200',
+                boldColor: 'text-black',
+                normalColor: 'text-gray-600'
+            },
+            dark: {
+                bg: 'bg-gray-700',
+                text: 'text-gray-100',
+                border: 'border-gray-600',
+                boldColor: 'text-white',
+                normalColor: 'text-gray-300'
+            },
+            sepia: {
+                bg: 'bg-yellow-50',
+                text: 'text-yellow-900',
+                border: 'border-yellow-200',
+                boldColor: 'text-yellow-950',
+                normalColor: 'text-yellow-700'
+            },
+            night: {
+                bg: 'bg-gray-900',
+                text: 'text-gray-200',
+                border: 'border-gray-700',
+                boldColor: 'text-white',
+                normalColor: 'text-gray-400'
+            },
+            blue: {
+                bg: 'bg-blue-900',
+                text: 'text-blue-100',
+                border: 'border-blue-700',
+                boldColor: 'text-white',
+                normalColor: 'text-blue-200'
+            },
+            green: {
+                bg: 'bg-green-900',
+                text: 'text-green-100',
+                border: 'border-green-700',
+                boldColor: 'text-white',
+                normalColor: 'text-green-200'
+            }
+        };
+
         // Función para cambiar modo de lectura
         function changeReadingMode(mode) {
             currentReadingMode = mode;
             const outputArea = document.getElementById('outputText');
+            const modeConfig = readingModes[mode];
             
-            // Remover todas las clases de modo
-            outputArea.className = 'output-area reading-mode-' + mode;
+            // Aplicar clases de Tailwind
+            outputArea.className = `min-h-80 p-5 border-2 rounded-2xl text-lg leading-relaxed overflow-y-auto transition-all ${modeConfig.bg} ${modeConfig.text} ${modeConfig.border}`;
             
             // Actualizar botones activos
             document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.classList.remove('active');
+                btn.className = 'mode-btn px-4 py-2 border-2 border-gray-300 rounded-full text-sm font-medium transition-all hover:border-blue-400 hover:bg-blue-50';
             });
-            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+            document.querySelector(`[data-mode="${mode}"]`).className = 'mode-btn px-4 py-2 border-2 border-blue-500 rounded-full text-sm font-medium transition-all bg-blue-500 text-white';
             
-            // Si hay texto, mantener la conversión con el nuevo modo
+            // Si hay texto, reconvertir con el nuevo modo
             if (document.getElementById('inputText').value.trim()) {
                 convertToBionic();
             }
@@ -524,6 +255,7 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
             }
             
             const words = inputText.split(/\s+/);
+            const modeConfig = readingModes[currentReadingMode];
             let bionicHTML = '';
             
             words.forEach(word => {
@@ -537,10 +269,10 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
                         const normalPart = cleanWord.substring(boldLength);
                         
                         bionicHTML += `<span class="bionic-word">
-                            <span class="bionic-bold">${boldPart}</span><span class="bionic-normal">${normalPart}${punctuation}</span>
+                            <span class="font-bold ${modeConfig.boldColor}">${boldPart}</span><span class="font-normal ${modeConfig.normalColor}">${normalPart}${punctuation}</span>
                         </span>`;
                     } else {
-                        bionicHTML += `<span class="bionic-word">${word}</span>`;
+                        bionicHTML += `<span class="bionic-word ${modeConfig.normalColor}">${word}</span>`;
                     }
                 }
             });
@@ -549,8 +281,9 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
             outputArea.innerHTML = bionicHTML;
             outputArea.style.fontSize = fontSize + 'px';
             
-            // Aplicar el modo de lectura actual
-            outputArea.className = 'output-area reading-mode-' + currentReadingMode;
+            // Mantener el modo actual
+            const modeConfigCurrent = readingModes[currentReadingMode];
+            outputArea.className = `min-h-80 p-5 border-2 rounded-2xl leading-relaxed overflow-y-auto transition-all ${modeConfigCurrent.bg} ${modeConfigCurrent.text} ${modeConfigCurrent.border}`;
             
             // Mostrar estadísticas
             updateStats(inputText, words.length);
@@ -566,7 +299,7 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
             document.getElementById('charCount').textContent = charCount;
             document.getElementById('readTime').textContent = readTime;
             document.getElementById('bionicTime').textContent = bionicTime;
-            document.getElementById('stats').style.display = 'block';
+            document.getElementById('stats').classList.remove('hidden');
         }
         
         // Función para cargar ejemplos
@@ -579,13 +312,15 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
         function clearAll() {
             document.getElementById('inputText').value = '';
             const outputArea = document.getElementById('outputText');
+            const modeConfig = readingModes[currentReadingMode];
+            
             outputArea.innerHTML = `
-                <p style="color: #999; text-align: center; margin-top: 100px; font-style: italic;">
+                <p class="text-gray-400 text-center mt-24 italic">
                     El texto convertido aparecerá aquí...
                 </p>
             `;
-            outputArea.className = 'output-area reading-mode-' + currentReadingMode;
-            document.getElementById('stats').style.display = 'none';
+            outputArea.className = `min-h-80 p-5 border-2 rounded-2xl text-lg leading-relaxed overflow-y-auto transition-all ${modeConfig.bg} ${modeConfig.text} ${modeConfig.border}`;
+            document.getElementById('stats').classList.add('hidden');
         }
         
         // Actualizar valores de los sliders
