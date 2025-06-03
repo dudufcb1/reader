@@ -291,6 +291,7 @@
             font-size: 18px;
             line-height: 1.8;
             overflow-y: auto;
+            transition: all 0.3s ease;
         }
 
         .bionic-word {
@@ -477,6 +478,29 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
     </div>
 
     <script>
+        // Variable global para el modo actual
+        let currentReadingMode = 'light';
+
+        // Función para cambiar modo de lectura
+        function changeReadingMode(mode) {
+            currentReadingMode = mode;
+            const outputArea = document.getElementById('outputText');
+            
+            // Remover todas las clases de modo
+            outputArea.className = 'output-area reading-mode-' + mode;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+            
+            // Si hay texto, mantener la conversión con el nuevo modo
+            if (document.getElementById('inputText').value.trim()) {
+                convertToBionic();
+            }
+        }
+
         // Ejemplos de texto
         const examples = {
             1: "La neuroplasticidad es la capacidad del cerebro para reorganizarse y formar nuevas conexiones neuronales a lo largo de toda la vida. Esta característica permite que el cerebro se adapte a nuevas situaciones, aprenda nuevas habilidades y se recupere de lesiones. Los científicos han descubierto que la lectura regular estimula la neuroplasticidad, mejorando la capacidad cognitiva y la memoria. Técnicas como la lectura bionic aprovechan esta plasticidad cerebral para optimizar el procesamiento de información textual.",
@@ -525,6 +549,9 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
             outputArea.innerHTML = bionicHTML;
             outputArea.style.fontSize = fontSize + 'px';
             
+            // Aplicar el modo de lectura actual
+            outputArea.className = 'output-area reading-mode-' + currentReadingMode;
+            
             // Mostrar estadísticas
             updateStats(inputText, words.length);
         }
@@ -551,11 +578,13 @@ Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las person
         // Función para limpiar todo
         function clearAll() {
             document.getElementById('inputText').value = '';
-            document.getElementById('outputText').innerHTML = `
+            const outputArea = document.getElementById('outputText');
+            outputArea.innerHTML = `
                 <p style="color: #999; text-align: center; margin-top: 100px; font-style: italic;">
                     El texto convertido aparecerá aquí...
                 </p>
             `;
+            outputArea.className = 'output-area reading-mode-' + currentReadingMode;
             document.getElementById('stats').style.display = 'none';
         }
         
