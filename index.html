@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Lectura Bionic</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .input-section, .output-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .input-area {
+            width: 100%;
+            min-height: 300px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-area:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-group label {
+            font-weight: 500;
+            color: #555;
+            white-space: nowrap;
+        }
+
+        .slider {
+            width: 100px;
+            height: 5px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4facfe;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4facfe;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .output-area {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 300px;
+            font-size: 18px;
+            line-height: 1.8;
+            overflow-y: auto;
+        }
+
+        .bionic-word {
+            margin-right: 5px;
+        }
+
+        .bionic-bold {
+            font-weight: 700;
+            color: #333;
+        }
+
+        .bionic-normal {
+            font-weight: 400;
+            color: #666;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .examples {
+            background: #f0f8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .examples h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .example-btn {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1565c0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .example-btn:hover {
+            background: #90caf9;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .control-group {
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Generador de Lectura Bionic</h1>
+            <p>Mejora tu velocidad de lectura y concentración con técnicas de resaltado inteligente</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title">📝 Texto Original</h2>
+                <textarea class="input-area" id="inputText" placeholder="Pega aquí tu texto para convertir a formato bionic...
+
+Ejemplo: La lectura bionic es una técnica revolucionaria que ayuda a las personas a leer más rápido resaltando las primeras letras de cada palabra."></textarea>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="boldRatio">Intensidad:</label>
+                        <input type="range" id="boldRatio" class="slider" min="0.3" max="0.8" step="0.1" value="0.5">
+                        <span id="boldRatioValue">50%</span>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="fontSize">Tamaño:</label>
+                        <input type="range" id="fontSize" class="slider" min="14" max="24" step="2" value="18">
+                        <span id="fontSizeValue">18px</span>
+                    </div>
+                    
+                    <button class="btn" onclick="convertToBionic()">✨ Convertir</button>
+                    <button class="btn" onclick="clearAll()">🗑️ Limpiar</button>
+                </div>
+
+                <div class="examples">
+                    <h3>📖 Textos de Ejemplo:</h3>
+                    <button class="example-btn" onclick="loadExample(1)">Artículo de Ciencia</button>
+                    <button class="example-btn" onclick="loadExample(2)">Noticia</button>
+                    <button class="example-btn" onclick="loadExample(3)">Literatura</button>
+                    <button class="example-btn" onclick="loadExample(4)">Técnico</button>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <h2 class="section-title">🎯 Resultado Bionic</h2>
+                <div class="output-area" id="outputText">
+                    <p style="color: #999; text-align: center; margin-top: 100px; font-style: italic;">
+                        El texto convertido aparecerá aquí...
+                    </p>
+                </div>
+                
+                <div class="stats" id="stats" style="display: none;">
+                    <div class="stat-item">
+                        <div class="stat-number" id="wordCount">0</div>
+                        <div class="stat-label">Palabras</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="charCount">0</div>
+                        <div class="stat-label">Caracteres</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="readTime">0</div>
+                        <div class="stat-label">Min. Lectura</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="bionicTime">0</div>
+                        <div class="stat-label">Min. Bionic</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ejemplos de texto
+        const examples = {
+            1: "La neuroplasticidad es la capacidad del cerebro para reorganizarse y formar nuevas conexiones neuronales a lo largo de toda la vida. Esta característica permite que el cerebro se adapte a nuevas situaciones, aprenda nuevas habilidades y se recupere de lesiones. Los científicos han descubierto que la lectura regular estimula la neuroplasticidad, mejorando la capacidad cognitiva y la memoria. Técnicas como la lectura bionic aprovechan esta plasticidad cerebral para optimizar el procesamiento de información textual.",
+            
+            2: "Las nuevas tecnologías de inteligencia artificial están revolucionando la forma en que procesamos información. Según estudios recientes, las técnicas de lectura asistida pueden mejorar la velocidad de comprensión hasta en un 40%. Empresas tecnológicas están desarrollando aplicaciones que utilizan algoritmos avanzados para optimizar la experiencia de lectura, adaptándose a los patrones individuales de cada usuario.",
+            
+            3: "En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor. Una olla de algo más vaca que carnero, salpicón las más noches, duelos y quebrantos los sábados, lentejas los viernes, algún palomino de añadidura los domingos, consumían las tres partes de su hacienda.",
+            
+            4: "La implementación de algoritmos de machine learning requiere una comprensión profunda de las estructuras de datos y los patrones de optimización. Los desarrolladores deben considerar factores como la escalabilidad, la eficiencia computacional y la precisión del modelo. Las técnicas de preprocessing de datos son fundamentales para garantizar resultados óptimos en los sistemas de aprendizaje automático."
+        };
+
+        // Función para convertir texto a formato bionic
+        function convertToBionic() {
+            const inputText = document.getElementById('inputText').value;
+            const boldRatio = parseFloat(document.getElementById('boldRatio').value);
+            const fontSize = parseInt(document.getElementById('fontSize').value);
+            
+            if (!inputText.trim()) {
+                alert('Por favor, ingresa algún texto para convertir.');
+                return;
+            }
+            
+            const words = inputText.split(/\s+/);
+            let bionicHTML = '';
+            
+            words.forEach(word => {
+                if (word.length > 0) {
+                    const cleanWord = word.replace(/[^\w\sáéíóúñü]/gi, '');
+                    const punctuation = word.replace(/[\w\sáéíóúñü]/gi, '');
+                    
+                    if (cleanWord.length > 0) {
+                        const boldLength = Math.max(1, Math.ceil(cleanWord.length * boldRatio));
+                        const boldPart = cleanWord.substring(0, boldLength);
+                        const normalPart = cleanWord.substring(boldLength);
+                        
+                        bionicHTML += `<span class="bionic-word">
+                            <span class="bionic-bold">${boldPart}</span><span class="bionic-normal">${normalPart}${punctuation}</span>
+                        </span>`;
+                    } else {
+                        bionicHTML += `<span class="bionic-word">${word}</span>`;
+                    }
+                }
+            });
+            
+            const outputArea = document.getElementById('outputText');
+            outputArea.innerHTML = bionicHTML;
+            outputArea.style.fontSize = fontSize + 'px';
+            
+            // Mostrar estadísticas
+            updateStats(inputText, words.length);
+        }
+        
+        // Función para actualizar estadísticas
+        function updateStats(text, wordCount) {
+            const charCount = text.length;
+            const readTime = Math.ceil(wordCount / 200); // 200 palabras por minuto promedio
+            const bionicTime = Math.ceil(wordCount / 280); // 40% más rápido con bionic
+            
+            document.getElementById('wordCount').textContent = wordCount;
+            document.getElementById('charCount').textContent = charCount;
+            document.getElementById('readTime').textContent = readTime;
+            document.getElementById('bionicTime').textContent = bionicTime;
+            document.getElementById('stats').style.display = 'block';
+        }
+        
+        // Función para cargar ejemplos
+        function loadExample(num) {
+            document.getElementById('inputText').value = examples[num];
+            convertToBionic();
+        }
+        
+        // Función para limpiar todo
+        function clearAll() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('outputText').innerHTML = `
+                <p style="color: #999; text-align: center; margin-top: 100px; font-style: italic;">
+                    El texto convertido aparecerá aquí...
+                </p>
+            `;
+            document.getElementById('stats').style.display = 'none';
+        }
+        
+        // Actualizar valores de los sliders
+        document.getElementById('boldRatio').addEventListener('input', function() {
+            document.getElementById('boldRatioValue').textContent = Math.round(this.value * 100) + '%';
+        });
+        
+        document.getElementById('fontSize').addEventListener('input', function() {
+            document.getElementById('fontSizeValue').textContent = this.value + 'px';
+        });
+        
+        // Conversión automática al cambiar configuración
+        document.getElementById('boldRatio').addEventListener('change', function() {
+            if (document.getElementById('inputText').value.trim()) {
+                convertToBionic();
+            }
+        });
+        
+        document.getElementById('fontSize').addEventListener('change', function() {
+            if (document.getElementById('inputText').value.trim()) {
+                convertToBionic();
+            }
+        });
+        
+        // Atajo de teclado para convertir (Ctrl+Enter)
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                convertToBionic();
+            }
+        });
+    </script>
+</body>
+</html>
